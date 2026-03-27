@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow">
+            <!-- Form ka header -->
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            
+            <div class="card-body">
+                <!-- Note create/edit form -->
+                <form method="post">
+                    {% csrf_token %}   <!-- Security ke liye CSRF token -->
+                    
+                    <!-- Title -->
+                    <div class="mb-3">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                    </div>
+                    
+                    <!-- Character count k sath note feild -->
+                    <div class="mb-3">
+                        {{ form.content.label_tag }}
+                        {{ form.content }}
+                        <!-- Character counter -->
+                        <div class="text-end mt-1">
+                            <small id="char-count" class="text-muted">0 / 2000 characters</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Color picker field -->
+                    <div class="mb-3">
+                        {{ form.color.label_tag }}
+                        {{ form.color }}
+                    </div>
+                    
+                    <!-- Submit aur cancel buttons -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success btn-lg me-2">
+                            <i class="fas fa-save"></i> Save Note
+                        </button>
+                        <a href="{% url 'note_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Character counter k liye js -->
+<script>
+    const textarea = document.querySelector('textarea[name="content"]');
+    const charCount = document.getElementById('char-count');
+    const maxChars = 2000;
+
+    function updateCharCount() {
+        const current = textarea.value.length;
+        charCount.textContent = `${current} / ${maxChars} characters`;
+        
+        if (current > maxChars) {
+            charCount.classList.add('text-danger');
+        } else {
+            charCount.classList.remove('text-danger');
+        }
+    }
+
+    textarea.addEventListener('input', updateCharCount);
+    updateCharCount(); // Pehli baar count set karne ke liye
+</script>
+
+{% endblock %}
